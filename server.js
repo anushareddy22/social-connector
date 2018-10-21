@@ -1,9 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const users = require('./routes/api/users');
 const posts = require('./routes/api/posts');
 const profile = require('./routes/api/profile');
+const passport = require('passport');
+
 const app = express();
+  
+//Body parser middleware
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 //DB config
 const db = require('./keys').mongoURI;
@@ -14,6 +21,12 @@ mongoose.connect(db)
 
 // let's write our first route
 app.get('/', (req, res) => res.send('Hello World'));
+
+//passport middleware
+app.use(passport.initialize());
+
+//Passport config
+require('./config/passport')(passport);
 
 app.use('/api/users', users);
 app.use('/api/profile', profile);
